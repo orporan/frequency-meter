@@ -5,11 +5,8 @@ module.exports =
 function FrequencyMeter(targetInterval) {
   if (! targetInterval) targetInterval = 1000;
 
-  var count = 0;
-  var maxCount = 10;
-  var start = now();
+  var events = [];
   var frequency = 0;
-  var period = targetInterval;
   var timeout;
 
   var ee = new EventEmitter();
@@ -18,8 +15,12 @@ function FrequencyMeter(targetInterval) {
   ee.happened =
   ee.activity =
   function happened() {
-    count ++;
-    if (count == maxCount) cycle();
+    var t = now();
+    events.push(t);
+    // filter out old events
+    events = events.filter( function(x) {
+      return (x > t - targetInterval);
+    });
   };
 
   /// end
@@ -31,7 +32,7 @@ function FrequencyMeter(targetInterval) {
     ee.activity =
     function() {
       throw new Error('ended');
-    }
+    };
   };
 
   schedule();
@@ -39,34 +40,10 @@ function FrequencyMeter(targetInterval) {
   return ee;
 
   //// ------
-
-  function cycle() {
-    var t = now();
-    period = (t - start) / 1000;
-    frequency = count / period;
-
-    // adjust maxCount
-    maxCount = Math.round(frequency * targetInterval);
-
-    frequency = frequency * 1000;
-
-    unschedule();
-    schedule();
-    
-    ee.emit('frequency', frequency);
- 
-    count = 0;
-    start = t;
-  }
-
+  
   function schedule() {
     timeout = setTimeout(function() {
-      if (count == 0) {
-        schedule();
-        ee.emit('frequency', frequency = 0);
-      } else {
-        maxCount = count + 1;
-      }
+      ee.emit('frequency', 1000 * (events.length / targetInterval));
     }, period);
   }
 
@@ -77,4 +54,4 @@ function FrequencyMeter(targetInterval) {
     }
   }
 
-}
+};
