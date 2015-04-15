@@ -44,7 +44,7 @@ function FrequencyMeter(targetInterval) {
   function schedule() {
     timeout = setTimeout(function() {
       ee.emit('frequency', 1000 * (events.length / targetInterval));
-    }, period);
+    }, targetInterval);
   }
 
   function unschedule() {
