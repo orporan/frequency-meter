@@ -1,13 +1,13 @@
 var EventEmitter = require('events').EventEmitter;
 var now = require('microtime').now;
-// console.log("ekarak/frequency-meter2");
-module.exports =
-function FrequencyMeter(targetInterval) {
-  if (! targetInterval) targetInterval = 1000;
 
+module.exports =
+function FrequencyMeter(samplingWindow, notificationMultiplier) {
+  if (! samplingWindow) samplingWindow = 1000;
+  if (! notificationMultiplier) notificationMultiplier = 5;
+  
   var events = [];
   var timeout;
-  var t = now();
   var ee = new EventEmitter();
 
   // happened
@@ -15,7 +15,7 @@ function FrequencyMeter(targetInterval) {
   ee.activity =
   function happened() {
     events.push(now());
-    // console.log("happened, events.length=="+events.length);
+    console.log("happened, events.length=="+events.length);
   };
 
   /// end
@@ -37,26 +37,22 @@ function FrequencyMeter(targetInterval) {
   //// ------
   
   function schedule() {
-    timeout = setTimeout(function() {
-		// console.log("fire in the hole!");
-      ee.emit('frequency', 1000 * (events.length / targetInterval));
-      clearOldEvents();
-      t = now();
-      schedule();
-    }, targetInterval);
+    timeout = setInterval(function() {
+      // filter out old events
+      events = events.filter( function(x) {
+        return (x > now() - 1000 * samplingWindow);
+      });
+
+      var frequency = (events.length / samplingWindow);
+	//console.log("fire in the hole! freq="+frequency);
+      ee.emit('frequency', frequency);
+    }, samplingWindow/notificationMultiplier);
   }
 
   function unschedule() {
     if (timeout) {
-      clearTimeout(timeout);
+      clearInterval(timeout);
       timeout = undefined;
     }
-  }
-
-  // filter out old events
-  function clearOldEvents() { 
-    events = events.filter( function(x) {
-      return (x > t - targetInterval*1000);
-    });
   }
 };
