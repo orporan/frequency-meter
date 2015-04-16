@@ -2,9 +2,9 @@ var EventEmitter = require('events').EventEmitter;
 var now = require('microtime').now;
 
 module.exports =
-function FrequencyMeter(samplingWindow, notificationMultiplier) {
+function FrequencyMeter(samplingWindow, ntfyInterval) {
   if (! samplingWindow) samplingWindow = 1000;
-  if (! notificationMultiplier) notificationMultiplier = 5;
+  if (! ntfyInterval) ntfyInterval = samplingWindow;
   
   var events = [];
   var timeout;
@@ -15,7 +15,7 @@ function FrequencyMeter(samplingWindow, notificationMultiplier) {
   ee.activity =
   function happened() {
     events.push(now());
-    console.log("happened, events.length=="+events.length);
+    //console.log("happened, events.length=="+events.length);
   };
 
   /// end
@@ -43,10 +43,10 @@ function FrequencyMeter(samplingWindow, notificationMultiplier) {
         return (x > now() - 1000 * samplingWindow);
       });
 
-      var frequency = (events.length / samplingWindow);
-	//console.log("fire in the hole! freq="+frequency);
+      var frequency = (1000 * events.length / samplingWindow);
+	// console.log("fire in the hole! freq="+frequency);
       ee.emit('frequency', frequency);
-    }, samplingWindow/notificationMultiplier);
+    }, ntfyInterval);
   }
 
   function unschedule() {

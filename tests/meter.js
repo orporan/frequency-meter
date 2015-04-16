@@ -17,7 +17,7 @@ test('emits 0 when no activity', function(t) {
 
 test('emits when constant activity', function(t) {
   t.plan(10);
-  var m = Meter(100);
+  var m = Meter(1000);
   var count = 0;
 
   var interval = setInterval(function() {
@@ -30,6 +30,6 @@ test('emits when constant activity', function(t) {
       clearInterval(interval);
       m.end();
     }
-    t.ok(f <= 105 && f >= 85, 'frequency inside expected interval:' + f);
+    t.ok(f <= 115 && f >= 85, 'frequency inside expected interval:' + f);
   });
 });
