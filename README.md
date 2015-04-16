@@ -24,10 +24,10 @@ Construct:
 var fm = FM();
 ```
 
-or construct with target emit interval (defaults to 1 second):
+or construct with explicit measuring and notifications intervals (both default to 1 second):
 
 ```javascript
-var fm = FM(5000); // 5 seconds
+var fm = FM(60000, 5000); // calculate frequency for events occuring in the previous 1 minute, report frequency every 5 seconds
 ```
 
 Feed it events:
