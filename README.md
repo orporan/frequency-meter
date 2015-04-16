@@ -1,12 +1,12 @@
 # Frequency Meter [![Build Status](https://secure.travis-ci.org/pgte/frequency-meter.png)](http://travis-ci.org/pgte/frequency-meter)
 
-Measures the frequency of events.
+Measures the frequency of events. This is a slightly modified version off pgte's initial code. My version has a more deterministic output, as the original version used dynamic rescheduling of count periods which produced significant skew after the first few minutes of operation.
 
 
 ## Install
 
 ```bash
-$ npm isntall frequency-meter
+$ npm install https://github.com/ekarak/frequency-meter
 ```
 
 
