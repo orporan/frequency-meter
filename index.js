@@ -1,5 +1,4 @@
 var EventEmitter = require('events').EventEmitter;
-var now = require('microtime').now;
 
 module.exports =
 function FrequencyMeter(samplingWindow, ntfyInterval) {
@@ -14,7 +13,7 @@ function FrequencyMeter(samplingWindow, ntfyInterval) {
   ee.happened =
   ee.activity =
   function happened() {
-    events.push(now());
+    events.push(Date.now());
     //console.log("happened, events.length=="+events.length);
   };
 
@@ -40,7 +39,7 @@ function FrequencyMeter(samplingWindow, ntfyInterval) {
     timeout = setInterval(function() {
       // filter out old events
       events = events.filter( function(x) {
-        return (x > now() - 1000 * samplingWindow);
+        return (x > Date.now() - 1000 * samplingWindow);
       });
 
       var frequency = (1000 * events.length / samplingWindow);
