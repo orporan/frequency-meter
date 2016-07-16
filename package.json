@@ -10,9 +10,6 @@
     "type": "git",
     "url": "git@github.com:pgte/frequency-meter.git"
   },
-  "dependencies": {
-    "microtime": "*"
-  },
   "devDependencies": {
     "tap": "*"
   },
